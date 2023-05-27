@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
-// const app = express.app();
+const router = express.Router();
 const app = express();
 const PORT = 8000; // You can change the port number if needed
 
@@ -47,16 +47,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Route handler for the root URL
-app.get('/', (req, res) => {
+router.get('/', (req, res) => {
   res.send(`
     <html>
     <head>
-      <title>Student Mentor app</title>
+      <title>Student Mentor router</title>
     </head>
     <body>
-      <h1>Welcome to the Student Mentor app</h1>
-      <p>This is the homepage of the app.</p>
-      <p>Use the following routes to interact with the app:</p>
+      <h1>Welcome to the Student Mentor router</h1>
+      <p>This is the homepage of the router.</p>
+      <p>Use the following routes to interact with the router:</p>
       <ul>
         <li><a href="/mentors/new">Create New Mentor</a></li>
         <li><a href="/students/new">Create New Student</a></li>
@@ -69,7 +69,7 @@ app.get('/', (req, res) => {
 });
 
 // API endpoint to create a new Mentor
-app.post('/mentors', async (req, res) => {
+router.post('/mentors', async (req, res) => {
   try {
     const { name, id, email } = req.body;
     const mentor = await Mentor.create({ name, id, email });
@@ -81,7 +81,7 @@ app.post('/mentors', async (req, res) => {
 });
 
 // API endpoint to create a new Student
-app.post('/students', async (req, res) => {
+router.post('/students', async (req, res) => {
   try {
     const { name, id, email } = req.body;
     const student = await Student.create({ name, id, email });
@@ -93,7 +93,7 @@ app.post('/students', async (req, res) => {
 });
 
 // API endpoint to assign a Student to a Mentor
-app.put('/students/:studentId/assign-mentor', async (req, res) => {
+router.put('/students/:studentId/assign-mentor', async (req, res) => {
   try {
     const { studentId } = req.params;
     const { mentorId, mentorName } = req.body;
@@ -109,7 +109,7 @@ app.put('/students/:studentId/assign-mentor', async (req, res) => {
 });
 
 // API endpoint to assign a Mentor to a Student (POST)
-app.post('/students/:studentId/assign-mentor', async (req, res) => {
+router.post('/students/:studentId/assign-mentor', async (req, res) => {
   try {
     const { studentId } = req.params;
     const { mentorId } = req.body;
@@ -131,7 +131,7 @@ app.post('/students/:studentId/assign-mentor', async (req, res) => {
 
 
 // API endpoint to assign or change the Mentor for a particular Student
-app.put('/students/:studentId/change-mentor', async (req, res) => {
+router.put('/students/:studentId/change-mentor', async (req, res) => {
   try {
     const { studentId } = req.params;
     const { mentorId } = req.body;
@@ -147,7 +147,7 @@ app.put('/students/:studentId/change-mentor', async (req, res) => {
 });
 
 // API endpoint to show all students for a particular mentor
-app.get('/mentors/:mentorId/students', async (req, res) => {
+router.get('/mentors/:mentorId/students', async (req, res) => {
   try {
     const { mentorId } = req.params;
 
@@ -162,7 +162,7 @@ app.get('/mentors/:mentorId/students', async (req, res) => {
 });
 
 // API endpoint to show the previously assigned mentor for a particular student
-app.get('/students/:studentId/previous-mentor', async (req, res) => {
+router.get('/students/:studentId/previous-mentor', async (req, res) => {
   try {
     const { studentId } = req.params;
 
@@ -177,7 +177,7 @@ app.get('/students/:studentId/previous-mentor', async (req, res) => {
 });
 
 // API endpoint to render an HTML page with the form to create a Mentor
-app.get('/mentors/new', (req, res) => {
+router.get('/mentors/new', (req, res) => {
   res.send(`<html>
     <head>
       <title>Create New Mentor</title>
@@ -202,7 +202,7 @@ app.get('/mentors/new', (req, res) => {
 
 
 // API endpoint to get a list of all mentors
-app.get('/mentors', async (req, res) => {
+router.get('/mentors', async (req, res) => {
   try {
     const mentors = await Mentor.find();
     res.status(201).json(mentors);
@@ -213,7 +213,7 @@ app.get('/mentors', async (req, res) => {
 });
 
 // API endpoint to render an HTML page with the form to create a Student
-app.get('/students/new', (req, res) => {
+router.get('/students/new', (req, res) => {
   res.send(`<html>
     <head>
       <title>Create New Student</title>
@@ -238,7 +238,7 @@ app.get('/students/new', (req, res) => {
 
 
 // API endpoint to get a list of all students
-app.get('/students', async (req, res) => {
+router.get('/students', async (req, res) => {
   try {
     const students = await Student.find();
     res.status(201).json(students);
@@ -249,7 +249,7 @@ app.get('/students', async (req, res) => {
 });
 
 // API endpoint to render an HTML page with the form to assign-mentor to students
-app.get('/students/:studentId/assign-mentor', async (req, res) => {
+router.get('/students/:studentId/assign-mentor', async (req, res) => {
   try {
     const mentors = await Mentor.find();
     const { studentId } = req.params;
@@ -281,7 +281,7 @@ app.get('/students/:studentId/assign-mentor', async (req, res) => {
   }
 });
 
-app.post('/students/:studentId/assign-mentor', async (req, res) => {
+router.post('/students/:studentId/assign-mentor', async (req, res) => {
   try {
     const mentors = await Mentor.find();
     const { studentId } = req.params;
@@ -315,7 +315,7 @@ app.post('/students/:studentId/assign-mentor', async (req, res) => {
 
 
 // API endpoint to render an HTML page with the form to change the Mentor for a Student
-app.get('/students/:studentId/change-mentor', async (req, res) => {
+router.get('/students/:studentId/change-mentor', async (req, res) => {
   try {
     const mentors = await Mentor.find();
     const { studentId } = req.params;
@@ -347,7 +347,7 @@ app.get('/students/:studentId/change-mentor', async (req, res) => {
   }
 });
 
-app.post('/students/:studentId/change-mentor', async (req, res) => {
+router.post('/students/:studentId/change-mentor', async (req, res) => {
   try {
     const { studentId } = req.params;
     const { mentorId } = req.body;
@@ -364,7 +364,7 @@ app.post('/students/:studentId/change-mentor', async (req, res) => {
 
 
 // API endpoint to render an HTML page with the form to change the Mentor for a Student
-app.put('/students/:studentId/change-mentor', async (req, res) => {
+router.put('/students/:studentId/change-mentor', async (req, res) => {
   try {
     const mentors = await Mentor.find();
     const { studentId } = req.params;
